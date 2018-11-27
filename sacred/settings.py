@@ -42,5 +42,5 @@ SETTINGS = munchify({
     # configure how dependencies are discovered. [none, imported, sys, pkg]
     'DISCOVER_DEPENDENCIES': "imported",
     # configure how source-files are discovered. [none, imported, sys, dir]
-    'DISCOVER_SOURCES': "imported"
+    'DISCOVER_SOURCES': "sys"
 })
