@@ -24,7 +24,9 @@ class FileStorageObserver(RunObserver):
 
     @classmethod
     def create(cls, basedir, resource_dir=None, source_dir=None,
-               template=None, priority=DEFAULT_FILE_STORAGE_PRIORITY):
+               template=None, priority=DEFAULT_FILE_STORAGE_PRIORITY, name=None):
+        if name is not None:
+            basedir = os.path.join(basedir, name)
         resource_dir = resource_dir or os.path.join(basedir, '_resources')
         source_dir = source_dir or os.path.join(basedir, '_sources')
         if template is not None:
