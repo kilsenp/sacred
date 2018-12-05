@@ -69,8 +69,7 @@ class SlackObserver(RunObserver):
         self.webhook_url = webhook_url
         self.bot_name = bot_name
         self.icon = icon
-        self.completed_text = ":white_check_mark: *{experiment[name]}* " \
-            "completed after _{elapsed_time}_ with result=`{result}`"
+        self.completed_text = True
         self.interrupted_text = ":warning: *{experiment[name]}* " \
                                 "interrupted after _{elapsed_time}_"
         self.failed_text = ":x: *{experiment[name]}* failed after " \
@@ -87,10 +86,19 @@ class SlackObserver(RunObserver):
             'experiment': ex_info,
             'command': command,
             'host_info': host_info,
+            'meta_info': meta_info
         }
 
     def get_completed_text(self):
-        return self.completed_text.format(**self.run)
+
+        if 'comment' in self.run['meta_info']:
+            completed_text = ":white_check_mark:{_id}: *{experiment[name]}* " \
+                "({comment}) completed after _{elapsed_time}_ with result=`{result}`"
+            self.run['comment'] = self.run['meta_info']['comment']
+        else:
+            completed_text = ":white_check_mark:{_id}: *{experiment[name]}* " \
+                "completed after _{elapsed_time}_ with result=`{result}`"
+        return completed_text.format(**self.run)
 
     def get_interrupted_text(self):
         return self.interrupted_text.format(**self.run)
@@ -100,7 +108,7 @@ class SlackObserver(RunObserver):
 
     def completed_event(self, stop_time, result):
         import requests
-        if self.completed_text is None:
+        if not self.completed_text:
             return
 
         self.run['result'] = result
